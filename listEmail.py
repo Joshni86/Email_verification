@@ -15,12 +15,12 @@ def generate_gmail_variants(email):
     # Remove dots since Gmail ignores them
     base_email = local.replace(".", "")
     
-    # Generate up to 10 dot variations
+    # Generate exactly 5 dot variations
     dotted_variants = set()
     count = 0
     for i in range(1, len(base_email)):
         for combination in itertools.combinations(range(1, len(base_email)), i):
-            if count >= 10:
+            if count >= 5:
                 break
             modified = list(base_email)
             for pos in combination:
@@ -28,14 +28,16 @@ def generate_gmail_variants(email):
             dotted_variants.add("".join(modified) + "@" + domain)
             count += 1
     
-    # Adding + tags (Hackers may exploit this for filtering bypass)
+    # Adding exactly 5 + tags (Hackers may exploit this for filtering bypass)
     plus_variants = set()
-    common_aliases = ["info", "contact", "support", "service", "admin", "sales", "newsletter", "updates", "alerts"]
-    for alias in common_aliases[:10 - len(dotted_variants)]:  # Ensure max 10 variants
+    common_aliases = ["info", "contact", "support", "service", "admin"]
+    for alias in common_aliases:
         plus_variants.add(base_email + "+" + alias + "@" + domain)
+        if len(plus_variants) >= 5:
+            break
     
-    # Combine all variants and limit to 10
-    all_variants = list(dotted_variants.union(plus_variants))[:10]
+    # Combine exactly 5 dot and 5 plus variants
+    all_variants = list(dotted_variants) + list(plus_variants)
     
     return all_variants
 
